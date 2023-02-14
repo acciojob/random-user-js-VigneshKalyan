@@ -1,47 +1,26 @@
-//your code here
-let agebutton=document.getElementById('age');
-  let emailbutton=document.getElementById('email');
-  let phonebutton=document.getElementById('phone');
-  let otherUserbutton=document.getElementById('otherUser');
-  let image=document.getElementById('image');
-  let addinfo=document.getElementById('addinfo');
-let ss=function()
-{
-  fetch("https://randomuser.me/api/")
-  .then((response) => {return response.json();})
-  .then((data) => {console.log(data.results[0]);
+let dataObj = {};
+        function modifyDom(id,txt){
+            document.getElementById(id).innerHTML = txt;
+        }
+        async function getUser() {
+            modifyDom("additionalInfo",`
+            <p id="age"></p>
+                <p id="email"></p>
+                <p id="phone"></p>
+            `);
+          const response = await fetch("https://randomuser.me/api/").then((response)=>response.json()).catch((error)=> console.log(error));
+          let result = response.results[0];
+          dataObj.fullName = result.name.first + " " + result.name.last;
+          dataObj.imgSrc = result.picture.large;
+          dataObj.age = result.dob.age ;
+          dataObj.email = result.email;
+          dataObj.phone = result.phone;
+          modifyDom("fullName", dataObj.fullName);
+          document.getElementById("img").setAttribute("src", dataObj.imgSrc);
+        }
+        getUser();
 
-  
-
-  image.innerHTML=`<img src=${data.results[0].picture.large}></img>`
-
-  function AgeButton(){
-        
-    addinfo.innerHTML=`<h1>${data.results[0].dob.age}</h1>` 
-    
-}
-
-function EmailButton(){
-  addinfo.innerHTML=`<h1>${data.results[0].email}</h1>` 
-
-}
-
-function PhoneButton(){
-  addinfo.innerHTML=`<h1>${data.results[0].phone}</h1>` 
-
-}
-
-agebutton.addEventListener('click',AgeButton);
-emailbutton.addEventListener('click',EmailButton);
-phonebutton.addEventListener('click',PhoneButton);
-
-}
-  );
-}
-  
-  
-ss();
-otherUserbutton.addEventListener('click',ss);
-
-
-  
+        function getData(ele){
+            let newEle = ele.getAttribute("data-attr");
+            modifyDom(newEle,dataObj[newEle]);
+        }
